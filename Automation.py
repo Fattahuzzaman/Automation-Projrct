@@ -1,3 +1,4 @@
+from pydoc import text
 from PIL import ImageGrab
 from matplotlib.pyplot import title
 import pywinauto,time
@@ -39,9 +40,29 @@ time.sleep(2)
 pag.press('enter')
 time.sleep(7)
 
-ss_region = (277, 570, 845, 619)
+ss_region = (270, 576, 962, 635)
 ss_img = ImageGrab.grab(ss_region)
 ss_img.save("S1.jpg")
+path_to_tesseract = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+image_path1 = r"C:\Users\FHZ\Downloads\Auto\s1.jpg"
+
+img1 = Image.open(image_path1)
+pytesseract.tesseract_cmd = path_to_tesseract
+text1 = pytesseract.image_to_string(img1)
+print(text1[:-1])
+
+wb=load_workbook('Result.xlsx')
+ws=wb.active
+for cell in ws["C"]:
+    if cell.value is None:
+        cell.value = text1
+    
+wb.save('Result.xlsx')
+string1=text1
+string2="Error: Error in importing, Please upload proper online downloaded draft JSON file."
+if string1 == string2 :
+    sys.exit()
+
 
 pywinauto.mouse.click(button='left', coords=(1100,721))
 time.sleep(2)
@@ -84,14 +105,7 @@ ss2_img = ImageGrab.grab(ss2_region)
 ss2_img.save("S2.jpg")
 
 
-path_to_tesseract = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-image_path1 = r"C:\Users\FHZ\s1.jpg"
-img1 = Image.open(image_path1)
-pytesseract.tesseract_cmd = path_to_tesseract
-text1 = pytesseract.image_to_string(img1)
-print(text1[:-1])
-
-image_path2 = r"C:\Users\FHZ\s2.jpg"
+image_path2 = r"C:\Users\FHZ\Downloads\Auto\s2.jpg"
 img2 = Image.open(image_path2)
 pytesseract.tesseract_cmd = path_to_tesseract
 text2 = pytesseract.image_to_string(img2)
@@ -100,6 +114,7 @@ print(text2[:-1])
 
 wb=load_workbook('Result.xlsx')
 ws=wb.active
-ws['C2'].value=text1
-ws['D2'].value=text2
+for cell in ws["D"]:
+    if cell.value is None:
+        cell.value = text2
 wb.save('Result.xlsx')
