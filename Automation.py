@@ -10,6 +10,7 @@ import pyautogui as pag
 from PIL import Image
 import sys
 from openpyxl import workbook, load_workbook
+import pandas as pd
 
 
 
@@ -51,17 +52,13 @@ pytesseract.tesseract_cmd = path_to_tesseract
 text1 = pytesseract.image_to_string(img1)
 print(text1[:-1])
 
-wb=load_workbook('Result.xlsx')
-ws=wb.active
-for cell in ws["C"]:
-    if cell.value is None:
-        cell.value = text1
-    
-wb.save('Result.xlsx')
+
 string1=text1
-string2="Error: Error in importing, Please upload proper online downloaded draft JSON file."
+string2="@ Error: Error in importing, Please upload proper online downloaded draft JSON file."
 if string1 == string2 :
     sys.exit()
+else:
+    print('Moving on')
 
 
 pywinauto.mouse.click(button='left', coords=(1100,721))
@@ -114,7 +111,6 @@ print(text2[:-1])
 
 wb=load_workbook('Result.xlsx')
 ws=wb.active
-for cell in ws["D"]:
-    if cell.value is None:
-        cell.value = text2
+ws.cell(column=3, row=ws.max_row+1, value=text1)
+ws.cell(column=4, row=ws.max_row+1, value=text2)
 wb.save('Result.xlsx')
